@@ -47,6 +47,9 @@ const BaseInput = styled.input`
 `
 export const TaskInput = styled(BaseInput)`
   flex: 1;
+  &::-webkit-calendar-picker-indicator {
+    display: none !important;
+  }
 `
 
 export const MinutesAmountInput = styled(BaseInput)`
@@ -83,8 +86,9 @@ export const StartcountDownButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
 
-  gap: 0, 5rem;
+  gap: 0.5rem;
   font-weight: bold;
 
   cursor: pointer;
@@ -97,7 +101,7 @@ export const StartcountDownButton = styled.button`
     cursor: not-allowed;
   }
 
-  &not(:disabled):hover {
+  &:not(:disabled):hover {
     background: ${(props) => props.theme['green-700']};
   }
 `
