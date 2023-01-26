@@ -36,6 +36,7 @@ export function Home() {
 
   const [cycleList, setCycleList] = useState<Cycle[]>([])
   const [activeIdCycle, setActiveIdCycle] = useState<string | null>(null)
+  const [amountSecondsPassed, setAmountSecondsPassed] = useState(0)
 
   function handleCreateNewCycle(data: newCycleFormData) {
     console.log(data)
@@ -55,6 +56,19 @@ export function Home() {
   const task = watch('task')
   const isSubmitDisabled = !task
 
+  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
+
+  const totalCurrentSeconds = activeCycle
+    ? totalSeconds - amountSecondsPassed
+    : 0
+
+  const currentMinutes = Math.floor(totalCurrentSeconds / 60)
+  const currentSeconds = totalCurrentSeconds % 60
+
+  console.log(currentMinutes)
+  console.log(currentSeconds)
+  const minutes = String(currentMinutes).padStart(2, '0')
+  const seconds = String(currentSeconds).padStart(2, '0')
   return (
     <HomeContainer>
       <form onSubmit={handleSubmit(handleCreateNewCycle)} action="">
@@ -85,11 +99,11 @@ export function Home() {
         </FormContainer>
 
         <CountdownContainer>
-          <span>0</span>
-          <span>0</span>
+          <span>{minutes[0]}</span>
+          <span>{minutes[1]}</span>
           <Separator>:</Separator>
-          <span>0</span>
-          <span>0</span>
+          <span>{seconds[0]}</span>
+          <span>{seconds[1]}</span>
         </CountdownContainer>
 
         <StartcountDownButton disabled={isSubmitDisabled} type="submit">
