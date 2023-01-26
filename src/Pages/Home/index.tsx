@@ -35,6 +35,7 @@ export function Home() {
   }
 
   const [cycleList, setCycleList] = useState<Cycle[]>([])
+  const [activeIdCycle, setActiveIdCycle] = useState<string | null>(null)
 
   function handleCreateNewCycle(data: newCycleFormData) {
     console.log(data)
@@ -45,9 +46,12 @@ export function Home() {
     }
 
     setCycleList((state) => [...state, newCycle])
+    setActiveIdCycle(newCycle.id)
     reset()
   }
+  const activeCycle = cycleList.find((cycle) => cycle.id === activeIdCycle)
   console.log(cycleList)
+  console.log(activeCycle)
   const task = watch('task')
   const isSubmitDisabled = !task
 
