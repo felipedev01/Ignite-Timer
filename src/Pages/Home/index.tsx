@@ -1,7 +1,8 @@
 import { Play } from 'phosphor-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod'
+import { differenceInSeconds } from 'date-fns'
 
 import { useForm } from 'react-hook-form'
 import {
@@ -32,6 +33,7 @@ export function Home() {
     id: string
     task: string
     minutesAmount: number
+    cycleDate: Date
   }
 
   const [cycleList, setCycleList] = useState<Cycle[]>([])
@@ -44,14 +46,16 @@ export function Home() {
       id: String(new Date().getTime()),
       task: data.task,
       minutesAmount: data.minutesAmount,
+      cycleDate: new Date(),
     }
 
     setCycleList((state) => [...state, newCycle])
     setActiveIdCycle(newCycle.id)
     reset()
+    setAmountSecondsPassed(0)
   }
   const activeCycle = cycleList.find((cycle) => cycle.id === activeIdCycle)
-  console.log(cycleList)
+
   console.log(activeCycle)
   const task = watch('task')
   const isSubmitDisabled = !task
@@ -69,6 +73,25 @@ export function Home() {
   console.log(currentSeconds)
   const minutes = String(currentMinutes).padStart(2, '0')
   const seconds = String(currentSeconds).padStart(2, '0')
+  useEffect(() => {
+    let interval: number
+    if (activeCycle) {
+      interval = setInterval(() => {
+        setAmountSecondsPassed(
+          differenceInSeconds(new Date(), activeCycle.cycleDate),
+        )
+      }, 1000)
+      return () => {
+        clearInterval(interval)
+      }
+    }
+  }, [activeCycle])
+
+  useEffect(() => {
+    if (activeCycle) {
+      document.title = `${minutes}:${seconds}`
+    }
+  }, [activeCycle, minutes, seconds])
   return (
     <HomeContainer>
       <form onSubmit={handleSubmit(handleCreateNewCycle)} action="">
