@@ -18,7 +18,7 @@ import {
 
 const newCycleFormValidationSchema = zod.object({
   task: zod.string().min(1, 'Informe a tarefa'),
-  minutesAmount: zod.number().min(5).max(60),
+  minutesAmount: zod.number().min(1).max(60),
 })
 
 type newCycleFormData = zod.infer<typeof newCycleFormValidationSchema>
@@ -35,11 +35,24 @@ export function Home() {
     task: string
     minutesAmount: number
     cycleDate: Date
+    interruptCycleDate?: Date
+    finishedCycleDate?: Date
   }
 
   const [cycleList, setCycleList] = useState<Cycle[]>([])
   const [activeIdCycle, setActiveIdCycle] = useState<string | null>(null)
   const [amountSecondsPassed, setAmountSecondsPassed] = useState(0)
+
+  function handleInterruptCycle() {
+    setCycleList((state) =>
+      state.map((cycle) => {
+        if (cycle.id === activeIdCycle) {
+          return { ...cycle, interruptCycleDate: new Date() }
+        } else return cycle
+      }),
+    )
+    setActiveIdCycle(null)
+  }
 
   function handleCreateNewCycle(data: newCycleFormData) {
     console.log(data)
@@ -78,21 +91,37 @@ export function Home() {
     let interval: number
     if (activeCycle) {
       interval = setInterval(() => {
-        setAmountSecondsPassed(
-          differenceInSeconds(new Date(), activeCycle.cycleDate),
+        const secondsDifference = differenceInSeconds(
+          new Date(),
+          activeCycle.cycleDate,
         )
+        if (secondsDifference >= totalSeconds) {
+          setCycleList((state) =>
+            state.map((cycle) => {
+              if (cycle.id === activeIdCycle) {
+                return { ...cycle, finishedCycleDate: new Date() }
+              } else return cycle
+            }),
+          )
+          clearInterval(interval)
+          setAmountSecondsPassed(totalSeconds)
+        } else {
+          setAmountSecondsPassed(secondsDifference)
+        }
       }, 1000)
       return () => {
         clearInterval(interval)
       }
     }
-  }, [activeCycle])
+  }, [activeCycle, totalSeconds, activeIdCycle])
 
   useEffect(() => {
     if (activeCycle) {
       document.title = `${minutes}:${seconds}`
     }
   }, [activeCycle, minutes, seconds])
+
+  console.log(cycleList)
   return (
     <HomeContainer>
       <form onSubmit={handleSubmit(handleCreateNewCycle)} action="">
@@ -102,6 +131,7 @@ export function Home() {
             id="task"
             list="taskSuggestions"
             placeholder="Vou trabalhar em"
+            disabled={!!activeCycle}
             {...register('task')}
           />
           <datalist id="taskSuggestions">
@@ -114,9 +144,10 @@ export function Home() {
           <MinutesAmountInput
             type="number"
             id="minutesAmount"
-            step={5}
+            step={1}
             max={60}
             min={0}
+            disabled={!!activeCycle}
             {...register('minutesAmount', { valueAsNumber: true })}
           />
           <span>minutos.</span>
@@ -131,7 +162,7 @@ export function Home() {
         </CountdownContainer>
 
         {activeCycle ? (
-          <StopCountDownButton type="button">
+          <StopCountDownButton type="button" onClick={handleInterruptCycle}>
             <HandPalm size={24} />
             interromper
           </StopCountDownButton>
