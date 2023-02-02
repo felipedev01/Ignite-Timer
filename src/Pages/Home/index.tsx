@@ -34,7 +34,10 @@ export function Home() {
 
   
 
-  
+  function createNewCycle(data:newCycleFormData){
+    handleCreateNewCycle(data)
+    reset()
+  }
   
 
   
@@ -46,7 +49,7 @@ export function Home() {
 
   return (
     <HomeContainer>
-      <form onSubmit={handleSubmit(handleCreateNewCycle)} action="">
+      <form onSubmit={handleSubmit(createNewCycle)} action="">
         <FormProvider {...newCycleForm}>
           <NewCycleForm></NewCycleForm>
         </FormProvider>

@@ -8,7 +8,6 @@ export function History() {
   return (
     <HistoryContainer>
       <h1>Meu Histórico</h1>
-   <pre>{JSON.stringify(cycleList, null, 2)}</pre>
       <HistoryList>
         <table>
           <thead>
@@ -20,30 +19,28 @@ export function History() {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Tarefa</td>
-              <td>20 minutos</td>
-              <td>Há 2 meses</td>
-              <td>
-                <Status colors="red">Concluído</Status>
-              </td>
-            </tr>
-            <tr>
-              <td>Tarefa</td>
-              <td>20 minutos</td>
-              <td>Há 2 meses</td>
-              <td>
-                <Status colors="yellow">Concluído</Status>
-              </td>
-            </tr>
-            <tr>
-              <td>Tarefa</td>
-              <td>20 minutos</td>
-              <td>Há 2 meses</td>
-              <td>
-                <Status colors="green">Concluído</Status>
-              </td>
-            </tr>
+            
+              {
+                cycleList.map(cycle=>{
+
+                  return(
+                    <tr key={cycle.id}>
+                    <td>{cycle.task}</td>
+                    <td>{cycle.minutesAmount}</td>
+                     <td>{cycle.cycleDate.toISOString()}</td>
+                     <td>
+                      {cycle.finishedCycleDate && (<Status colors="green">Concluído</Status>)}
+                      {cycle.interruptCycleDate &&(<Status colors="red">Interrompido</Status>)}
+                      {!cycle.finishedCycleDate && !cycle.interruptCycleDate &&(<Status colors="yellow">Em andamento</Status>)}
+                         
+                       </td>
+                    </tr>
+                  )
+                })
+              }
+              
+            
+            
           </tbody>
         </table>
       </HistoryList>
