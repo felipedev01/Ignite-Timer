@@ -19,6 +19,7 @@ interface CyclesContextType {
   activeCycle: Cycle | undefined
   activeIdCycle: String | null
   amountSecondsPassed: number
+  cycleList:Cycle[]
   markCurrentCycleAsFinished: () => void
   setSecondsPassed: (seconds: number) => void
   handleCreateNewCycle:(data:CreateCycleData)=>void
@@ -82,7 +83,8 @@ export function CycleContext({children}:CyclesContextProviderProps) {
         amountSecondsPassed,
         setSecondsPassed,
         handleInterruptCycle,
-        handleCreateNewCycle
+        handleCreateNewCycle,
+        cycleList
       }}
     >
       {children}
