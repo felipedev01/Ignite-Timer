@@ -38,26 +38,38 @@ export const CyclesContext = createContext({} as CyclesContextType)
 
 export function CycleContext({children}:CyclesContextProviderProps) {
   const [cycleState, dispatch] = useReducer((state:cycleProps,action:any)=>{
-    if(action.type == 'Iniciar_ciclo'){
-      return {...state,
-        cycleList:[...state.cycleList, action.payload.newCycle],
-        activeIdCycle:action.payload.newCycle.id,
-      }
-        
-    }if(action.type == 'Interromper_ciclo'){
 
-      return{
-        ...state,
-        cycleList:state.cycleList.map((cycle) => {
-          if (cycle.id === state.activeIdCycle) {
-            return { ...cycle, interruptCycleDate: new Date() }
-          } else return cycle
-        }),
-        activeIdCycle:null
-      }
+    switch(action.type){
+      case 'Iniciar_ciclo':
+        return {...state,
+          cycleList:[...state.cycleList, action.payload.newCycle],
+          activeIdCycle:action.payload.newCycle.id,
+        }
+      case 'Interromper_ciclo':
+        return{
+          ...state,
+          cycleList:state.cycleList.map((cycle) => {
+            if (cycle.id === state.activeIdCycle) {
+              return { ...cycle, interruptCycleDate: new Date() }
+            } else return cycle
+          }),
+          activeIdCycle:null
+        }
+      case 'marcar_ciclo':
+        return{
+          ...state,
+          cycleList:state.cycleList.map((cycle) => {
+            if (cycle.id ===state.activeIdCycle) {
+              return { ...cycle, finishedCycleDate: new Date() }
+            } else return cycle
+          }),
+          activeIdCycle:null
+          
+        }
+      default: return state
     }
 
-    return state
+   
   },{
     cycleList:[],
     activeIdCycle:null
@@ -96,14 +108,7 @@ export function CycleContext({children}:CyclesContextProviderProps) {
         activeIdCycle
       }
     })
-    /*setCycleList((state) =>
-      state.map((cycle) => {
-        if (cycle.id === activeIdCycle) {
-          return { ...cycle, interruptCycleDate: new Date() }
-        } else return cycle
-      }),
-    )*/
-   // setActiveIdCycle(null)
+    
   }
 
   function handleCreateNewCycle(data: CreateCycleData) {

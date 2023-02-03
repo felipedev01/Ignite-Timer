@@ -27,12 +27,15 @@ export function CountDown() {
           markCurrentCycleAsFinished()
           clearInterval(interval)
           setSecondsPassed(totalSeconds)
+          
+          
         } else {
           setSecondsPassed(secondsDifference)
         }
       }, 1000)
       return () => {
         clearInterval(interval)
+        
       }
     }
   }, [
