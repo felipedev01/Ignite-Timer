@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useReducer, useState } from 'react'
 import { any } from 'zod';
+import { Cycle, Reducers } from '../Reducers/Cycles';
 
 
 
@@ -7,20 +8,14 @@ interface CreateCycleData{
   task:any;
   minutesAmount:number;
 }
-interface Cycle {
-  id: string
-  task: string
-  minutesAmount: number
-  cycleDate: Date
-  interruptCycleDate?: Date
-  finishedCycleDate?: Date
-}
+
 
 interface CyclesContextType {
   activeCycle: Cycle | undefined
   activeIdCycle: String | null
   amountSecondsPassed: number
   cycleList:Cycle[]
+
   markCurrentCycleAsFinished: () => void
   setSecondsPassed: (seconds: number) => void
   handleCreateNewCycle:(data:CreateCycleData)=>void
@@ -29,48 +24,12 @@ interface CyclesContextType {
 interface CyclesContextProviderProps{
 children:ReactNode
 }
-interface cycleProps{
-  cycleList:Cycle[]
-  activeIdCycle:String | null
-}
+
 
 export const CyclesContext = createContext({} as CyclesContextType)
 
 export function CycleContext({children}:CyclesContextProviderProps) {
-  const [cycleState, dispatch] = useReducer((state:cycleProps,action:any)=>{
-
-    switch(action.type){
-      case 'Iniciar_ciclo':
-        return {...state,
-          cycleList:[...state.cycleList, action.payload.newCycle],
-          activeIdCycle:action.payload.newCycle.id,
-        }
-      case 'Interromper_ciclo':
-        return{
-          ...state,
-          cycleList:state.cycleList.map((cycle) => {
-            if (cycle.id === state.activeIdCycle) {
-              return { ...cycle, interruptCycleDate: new Date() }
-            } else return cycle
-          }),
-          activeIdCycle:null
-        }
-      case 'marcar_ciclo':
-        return{
-          ...state,
-          cycleList:state.cycleList.map((cycle) => {
-            if (cycle.id ===state.activeIdCycle) {
-              return { ...cycle, finishedCycleDate: new Date() }
-            } else return cycle
-          }),
-          activeIdCycle:null
-          
-        }
-      default: return state
-    }
-
-   
-  },{
+  const [cycleState, dispatch] = useReducer(Reducers,{
     cycleList:[],
     activeIdCycle:null
   })
