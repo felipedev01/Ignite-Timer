@@ -11,15 +11,22 @@ interface cycleProps{
     activeIdCycle:String | null
   }
 
+  export enum ActionTypes{
+    Interromper_ciclo= 'Interromper_ciclo',
+    Iniciar_ciclo= 'Iniciar_ciclo',
+    marcar_ciclo= 'marcar_ciclo',
+}
+  
+
 export function Reducers(state:cycleProps, action:any){
 
     switch(action.type){
-      case 'Iniciar_ciclo':
+      case ActionTypes.Iniciar_ciclo:
         return {...state,
           cycleList:[...state.cycleList, action.payload.newCycle],
           activeIdCycle:action.payload.newCycle.id,
         }
-      case 'Interromper_ciclo':
+      case ActionTypes.Interromper_ciclo:
         return{
           ...state,
           cycleList:state.cycleList.map((cycle) => {
@@ -29,7 +36,7 @@ export function Reducers(state:cycleProps, action:any){
           }),
           activeIdCycle:null
         }
-      case 'marcar_ciclo':
+      case ActionTypes.marcar_ciclo:
         return{
           ...state,
           cycleList:state.cycleList.map((cycle) => {
