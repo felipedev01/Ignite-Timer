@@ -1,6 +1,6 @@
 import { HandPalm, Play } from 'phosphor-react'
 import { useContext } from 'react'
-import{CyclesContext} from '../../Contexts/CyclesContext'
+import { CyclesContext } from '../../Contexts/CyclesContext'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod'
 
@@ -21,7 +21,8 @@ const newCycleFormValidationSchema = zod.object({
 type newCycleFormData = zod.infer<typeof newCycleFormValidationSchema>
 
 export function Home() {
-  const{handleCreateNewCycle,handleInterruptCycle,activeCycle}=useContext(CyclesContext)
+  const { handleCreateNewCycle, handleInterruptCycle, activeCycle } =
+    useContext(CyclesContext)
   const newCycleForm = useForm<newCycleFormData>({
     resolver: zodResolver(newCycleFormValidationSchema),
     defaultValues: {
@@ -32,20 +33,14 @@ export function Home() {
 
   const { handleSubmit, watch, reset } = newCycleForm
 
-  
-
-  function createNewCycle(data:newCycleFormData){
+  function createNewCycle(data: newCycleFormData) {
     handleCreateNewCycle(data)
     reset()
   }
-  
-
-  
 
   console.log(activeCycle)
   const task = watch('task')
   const isSubmitDisabled = !task
-
 
   return (
     <HomeContainer>
